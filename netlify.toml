@@ -2,15 +2,12 @@
   base = "flutterwave"
   command = "npm install"
   publish = "netlify"
+  edge_functions = "netlify/edge-functions"
 
 [functions]
   directory = "netlify/functions"
 
-[edge_functions]
-  directory = "netlify/edge-functions"
-
+# 👇 Edge function definition
 [[edge_functions]]
-  path = "/api/virtual-account"
   function = "create-virtual-account"
-  cache = "manual"
-  onError = "/error" 
+  path = "/api/virtual-account"
