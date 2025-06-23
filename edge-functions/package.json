@@ -1,0 +1,20 @@
+{
+    "name": "flutterwave-virtual-account",
+    "version": "1.0.0",
+    "description": "Flutterwave Virtual Account Creator with Netlify Edge Functions",
+    "main": "index.js",
+    "scripts": {
+      "dev": "netlify dev",
+      "build": "tsc",
+      "deploy": "netlify deploy --prod"
+    },
+    "dependencies": {
+      "@netlify/edge-functions": "*",
+      "@netlify/functions": "*",
+      "@types/node": "*",
+      "typescript": "*"
+    },
+    "devDependencies": {
+      "netlify-cli": "*"
+    }
+  } 
