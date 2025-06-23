@@ -1,6 +1,7 @@
 [build]
+  base = "flutterwave"
   command = "npm install"
-  publish = "public"
+  publish = "netlify"
 
 [functions]
   directory = "netlify/functions"
@@ -10,4 +11,6 @@
 
 [[edge_functions]]
   path = "/api/virtual-account"
-  function = "create-virtual-account" 
+  function = "create-virtual-account"
+  cache = "manual"
+  onError = "/error" 
