@@ -1,0 +1,131 @@
+!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Account Creator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            display: none;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <h1>Create Virtual Account</h1>
+    <form id="accountForm">
+        <div class="form-group">
+            <label for="firstname">First Name:</label>
+            <input type="text" id="firstname" name="firstname" required>
+        </div>
+        <div class="form-group">
+            <label for="lastname">Last Name:</label>
+            <input type="text" id="lastname" name="lastname" required>
+        </div>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+            <label for="phonenumber">Phone Number:</label>
+            <input type="tel" id="phonenumber" name="phonenumber" required>
+        </div>
+        <div class="form-group">
+            <label for="bvn">BVN (required for permanent account):</label>
+            <input type="text" id="bvn" name="bvn">
+        </div>
+        <div class="form-group">
+            <label>
+                <input type="checkbox" id="is_permanent" name="is_permanent" checked>
+                Create Permanent Account
+            </label>
+        </div>
+        <button type="submit">Create Account</button>
+    </form>
+    <div id="result"></div>
+
+    <script>
+        document.getElementById('accountForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = 'Creating virtual account...';
+            resultDiv.className = '';
+
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+            data.is_permanent = document.getElementById('is_permanent').checked;
+
+            try {
+                const response = await fetch('/api/virtual-account', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    resultDiv.className = 'success';
+                    resultDiv.innerHTML = `
+                        <h3>Virtual Account Created!</h3>
+                        <p>Account Number: ${result.data.account_number}</p>
+                        <p>Bank Name: ${result.data.bank_name}</p>
+                        <p>Reference: ${result.data.flw_ref}</p>
+                        <p>Note: ${result.data.note}</p>
+                    `;
+                } else {
+                    resultDiv.className = 'error';
+                    resultDiv.innerHTML = `Error: ${result.message}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'error';
+                resultDiv.innerHTML = `Error: ${error.message}`;
+            }
+        });
+    </script>
+</body>
+</html>
