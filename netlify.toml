@@ -1,13 +1,30 @@
-[build]
-  command = "npm install"
-  publish = "public"
-
 [functions]
   directory = "netlify/functions"
 
 [edge_functions]
   directory = "netlify/edge-functions"
 
+# Single edge function configuration
 [[edge_functions]]
   path = "/api/virtual-account"
-  function = "create-virtual-account" 
+  function = "create-virtual-account"
+  cache = "manual"
+  onError = "/error"
+
+# Add proper caching and error handling for 2025
+[build.processing]
+  skip_processing = false
+
+[build.processing.html]
+  pretty_urls = true
+
+# Add security headers for 2025
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline';"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()" 
